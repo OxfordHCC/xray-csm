@@ -1,0 +1,14 @@
+{
+    "api": {
+        "port":8081
+    },
+    "db": {
+        "database":"xray_csm",
+        "host":"localhost",
+        "port":5432
+    },
+    "csm": {
+        "user":"postgres",
+        "password":"password"
+    }
+}
