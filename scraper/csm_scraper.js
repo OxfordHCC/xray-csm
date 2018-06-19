@@ -90,30 +90,27 @@ function parseCSMAndroidBuyLink($) {
     return link;
 }
 
-async function main() {
-    var csm = 'https://www.commonsensemedia.org/app-reviews/backbreaker-football';
-    //csm = 'https://www.commonsensemedia.org/app-reviews/tagged-chill-chat-go-live';
-    
-    let response = await requestPage(csm);
+async function parseCSMPage(url) {
+    let response = await requestPage(url);
 
     console.log(`Status Code: ${response.statusCode}`);
     let $ = cheerio.load(response.body);
 
-    let ageRating = parseCSMAgeRating($);
-    let csmRating = parseCSMRating($);
-    let csmOneLiner = parseCSMOneLiner($);
-    let csmGuidance = parseCSMParentGuidances($);
+    return {
+        age_rationgs: parseCSMAgeRating($),
+        csm_rating: parseCSMRating($),
+        one_liner: parseCSMOneLiner($),
+        parental_guidances: parseCSMParentGuidances($)
+    }
+}
 
-    //let csmPlayLink = parseCSMAndroidBuyLink($);
-
+async function main() {
+    var url = 'https://www.commonsensemedia.org/app-reviews/backbreaker-football';
+    //csm = 'https://www.commonsensemedia.org/app-reviews/tagged-chill-chat-go-live';
     
+    let parsedPage = await parseCSMPage(url);
 
-    console.log(`
-    Age Rating: ${ageRating}\n
-    CSM Rating: ${csmRating}\n
-    One Linter: ${csmOneLiner}\n
-    Guidances: ${JSON.stringify(csmGuidance, null,2)}
-    `)
+    console.log(`PARSING RESULTS: ${JSON.stringify(parsedPage, null, 2)}`);
 }
 
 main();
