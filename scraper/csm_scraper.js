@@ -13,15 +13,15 @@ function parseCSMAgeRating($) {
 
 function parseCSMRating($) {
     // Classes found in DOM: ratings-small, star, rating-5, field_stars_rating csm_review
-    let ratingsClasses = ['rating-0','rating-1','rating-2','rating-3','rating-4','rating-5']
-    let rating = $('.ratings-small.star.field_stars_rating.csm_review').first();
+    
+    let classes = ['ratings-small','star','field_stars_rating','csm_review'];
+    
+    let ratingString = $('.' + classes.join('.')).first()
+                            .toggleClass(classes.join(' '))
+                            .attr('class')
+                            .replace('rating-', '');
 
-    for(i=0;i<ratingsClasses.length;i++) {
-        if(rating.hasClass(ratingsClasses[i])) {
-            return i;
-        }
-    }
-    return -1;
+    return parseInt(ratingString);
 }
 
 function parseCSMOneLiner($) {
@@ -29,6 +29,55 @@ function parseCSMOneLiner($) {
     // Then need the children from this...
     let oneLineField = $('.field.field-name-field-one-liner.field-type-text.field-label-hidden').first()
     return oneLineField.children().first().children().first().text();
+}
+
+function parseGuidanceRating($) {
+    //
+    // content-grid-rating field_content_grid_rating field_collection_content_grid
+    // content-grid-4
+    let classes = ['content-grid-rating', 'field_content_grid_rating', 'field_collection_content_grid'];
+    let categoryRatingString = $.find('.' + classes.join('.')).first()
+                                .toggleClass(classes.join(' '))
+                                .attr('class');
+    return parseInt(categoryRatingString.replace('content-grid-', ''));
+}
+
+
+function parseGuidanceDescription($) {
+    // field field-name-field-content-grid-rating-text field-type-text-long field-label-hidden
+    let classes = ['field','field-name-field-content-grid-rating-text','field-type-text-long','field-label-hidden']
+    return $.find('.'+classes.join('.')).first().find('.field-item.even').first().text();
+}
+
+function parseGuidanceCategory($) {
+    return {
+        rating: parseGuidanceRating($),
+        description: parseGuidanceDescription($)
+    }
+}
+
+function parseCSMParentGuidances($) {
+
+    // Each category rating has a the following classes:
+    // content-grid-rating field_content_grid_rating field_collection_content_grid
+    // There is also a 'content-grid-<<VALUE>>, like content-grid-4 or content-grid-2 which is the rating
+
+    let playability = $('#content-grid-item-playability');
+    let violence = $('#content-grid-item-violence');
+    let sex = $('#content-grid-item-sex');
+    let language = $('#content-grid-item-language');
+    let consumerism = $('#content-grid-item-consumerism');
+    let drugs = $('#content-grid-item-drugs');
+    
+    return {
+        playability: parseGuidanceCategory(playability),
+        violence: parseGuidanceCategory(violence),
+        sex: parseGuidanceCategory(sex),
+        language: parseGuidanceCategory(language),
+        consumerism: parseGuidanceCategory(consumerism),
+        drugs: parseGuidanceCategory(drugs)
+    }
+
 }
 
 
@@ -53,13 +102,17 @@ async function main() {
     let ageRating = parseCSMAgeRating($);
     let csmRating = parseCSMRating($);
     let csmOneLiner = parseCSMOneLiner($);
+    let csmGuidance = parseCSMParentGuidances($);
 
     //let csmPlayLink = parseCSMAndroidBuyLink($);
+
+    
 
     console.log(`
     Age Rating: ${ageRating}\n
     CSM Rating: ${csmRating}\n
     One Linter: ${csmOneLiner}\n
+    Guidances: ${JSON.stringify(csmGuidance, null,2)}
     `)
 }
 
