@@ -31,6 +31,9 @@ function parseCSMOneLiner($) {
     return oneLineField.children().first().children().first().text();
 }
 
+
+// need to change the approach to scraping these links, the button HAS to be interacted with,
+// consider the use of some headless browser, something like JSDOM or PhantomJS should do.
 function parseCSMAndroidBuyLink($) {
     // Classes found in DOM: buy-link, googleplay
     let link =  $('.buy-links')//('.buy-link.googleplay').length//.first().attr('href').toString();;
@@ -49,15 +52,14 @@ async function main() {
 
     let ageRating = parseCSMAgeRating($);
     let csmRating = parseCSMRating($);
-
     let csmOneLiner = parseCSMOneLiner($);
-    let csmPlayLink = parseCSMAndroidBuyLink($);
+
+    //let csmPlayLink = parseCSMAndroidBuyLink($);
 
     console.log(`
     Age Rating: ${ageRating}\n
     CSM Rating: ${csmRating}\n
     One Linter: ${csmOneLiner}\n
-    Store Link: ${csmPlayLink}\n
     `)
 }
 
