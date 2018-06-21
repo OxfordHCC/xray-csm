@@ -103,7 +103,7 @@ class CSMScraper {
         let $ = cheerio.load(response.body);
 
         return {
-            age_rationgs: this.parseCSMAgeRating($),
+            age_ratings: this.parseCSMAgeRating($),
             csm_rating: this.parseCSMRating($),
             one_liner: this.parseCSMOneLiner($),
             parental_guidances: this.parseCSMParentGuidances($)
