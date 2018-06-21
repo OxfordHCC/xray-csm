@@ -6,6 +6,7 @@ const db = new DB('csm');
 
 const cheerio = require('cheerio');
 const fs = require('fs');
+const util = require('util');
 
 const CSM = 'https://www.commonsensemedia.org';
 
@@ -40,10 +41,10 @@ async function processCSM() {
         while(getNextPageURL($) != undefined);
     }
     catch(err) {
-        fs.writeFile('ERR_DUMP.json', csm_results, 'utf8');
+        fs.writeFile('ERR_DUMP.json', JSON.stringify(csm_results,null,2), 'utf8');
     }
 
-    fs.writeFile('CSMDump.json', csm_results, 'utf8',(err)=>console.log(err));
+    fs.writeFile('CSMDump.json', JSON.stringify(csm_results,null,2), 'utf8',(err)=>console.log(err));
     //console.log(`JSON DUMPS: ${JSON.stringify(csm_results,null,2)}`)
 }
 
