@@ -33,10 +33,10 @@ async function processCSM() {
         while(getNextPageURL($) != undefined);
     }
     catch(err) {
-        fs.writeFile('ERR_DUMP.json', json, 'utf8');
+        fs.writeFile('ERR_DUMP.json', csm_results, 'utf8');
     }
 
-    fs.writeFile('CSMDump.json', json, 'utf8');
+    fs.writeFile('CSMDump.json', csm_results, 'utf8',(err)=>console.log(err));
     //console.log(`JSON DUMPS: ${JSON.stringify(csm_results,null,2)}`)
 }
 
