@@ -32,19 +32,20 @@ async function processCSM() {
                 console.log(`Page: ${pageCount} -  Parsing App no ${pageAppCount} of ${links.length} - Total: ${totalAppCount}`);
 
                 let app = await scraper.parseCSMPage(CSM+link);
-                app.csm_uri = link;
-                csm_results.push(app)
-                await db.insertCSMAppData(app);
+                if(app) {
+                    app.csm_uri = link;
+                    csm_results.push(app)    
+                    await db.insertCSMAppData(app);                
+                }
             }
             url = CSM+getNextPageURL($);
         }
         while(getNextPageURL($) != undefined);
+     
     }
     catch(err) {
-        fs.writeFile('ERR_DUMP.json', JSON.stringify(csm_results,null,2), 'utf8');
+        console.log(err)
     }
-
-    fs.writeFile('CSMDump.json', JSON.stringify(csm_results,null,2), 'utf8',(err)=>console.log(err));
     //console.log(`JSON DUMPS: ${JSON.stringify(csm_results,null,2)}`)
 }
 

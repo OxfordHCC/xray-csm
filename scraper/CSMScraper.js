@@ -114,7 +114,13 @@ class CSMScraper {
         let $ = cheerio.load(response.body);
         
         let play_store_url = await this.parseCSMAndroidBuyLink(url);
+        
+        if(!play_store_url) {
+            return;
+        }
+
         let app_package_name = play_store_url.split('=')[1];
+
         return {
             name: this.parseCSMAppName($),
             age_rating: this.parseCSMAgeRating($),
