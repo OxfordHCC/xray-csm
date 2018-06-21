@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 const request = require('async-request');
-
+const phantom = require('phantom');
 
 class CSMScraper {
 
@@ -61,6 +61,11 @@ class CSMScraper {
         }
     }
 
+    parseCSMAppName($) {
+        //panel-pane pane-node-title csm_app
+        return $('.panel-pane.pane-node-title.csm_app').first().children().first().children().first().text();
+    }
+
     parseCSMParentGuidances($) {
 
         // Each category rating has a the following classes:
@@ -87,29 +92,37 @@ class CSMScraper {
 
     }
 
-
-    // need to change the approach to scraping these links, the button HAS to be interacted with,
-    // consider the use of some headless browser, something like JSDOM or PhantomJS should do.
-    parseCSMAndroidBuyLink($) {
-        // Classes found in DOM: buy-link, googleplay
-        let link =  $('.buy-links')//('.buy-link.googleplay').length//.first().attr('href').toString();;
-        console.log(link);
-        return link;
+    async parseCSMAndroidBuyLink(url) {
+        // Classes found in DOM: click -> .buy-button, then look for -> buy-link, googleplay
+        const instance = await phantom.create();
+        const page = await instance.createPage();
+        await page.on('onResourceRequested', function(requestData) {
+            //console.info('Requesting', requestData.url);
+        });
+        const status = await page.open(url);
+        const content = await page.property('content');
+        
+        let $ = cheerio.load(content);
+        let play_store_url = $('.googleplay').first().attr('href');
+        await instance.exit();
+        return play_store_url;
     }
 
     async parseCSMPage(url) {
         let response = await this.requestPage(url);
 
         let $ = cheerio.load(response.body);
-
+        
+        let play_store_url = await this.parseCSMAndroidBuyLink(url);
+        let app_package_name = play_store_url.split('=')[1];
         return {
-            app_name: "",
-            age_ratings: this.parseCSMAgeRating($),
+            name: this.parseCSMAppName($),
+            age_rating: this.parseCSMAgeRating($),
             csm_rating: this.parseCSMRating($),
             one_liner: this.parseCSMOneLiner($),
             csm_uri: "",
-            play_store_url: "",
-            app_package_name: "",
+            play_store_url: play_store_url,
+            app_package_name: app_package_name, // from playstore url.
             parental_guidances: this.parseCSMParentGuidances($)
         }
     }
