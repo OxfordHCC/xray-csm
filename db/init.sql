@@ -8,7 +8,7 @@ create table app_infos(
     one_liner           text,
     csm_uri             text,
     play_store_url      text,
-    app_package_name    text,
+    app_package_name    text
 ); 
 
 create table guidance_categories(
@@ -19,8 +19,8 @@ create table guidance_categories(
 create table app_guidances(
     guidance_id         serial      not null,
     app_id              serial      not null references app_infos(id),
-    category            serial      not null references guidance_categories(title),
-    age_rating          int         not null,
+    category            serial      not null references guidance_categories(id),
+    rating              int         not null,
     description         text        not null
 );
 

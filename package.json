@@ -18,6 +18,7 @@
   "homepage": "https://github.com/adamslack/XRayCSM#readme",
   "dependencies": {
     "async-request": "^1.2.0",
-    "cheerio": "^1.0.0-rc.2"
+    "cheerio": "^1.0.0-rc.2",
+    "pg": "^7.4.3"
   }
 }

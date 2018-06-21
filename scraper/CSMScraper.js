@@ -41,7 +41,7 @@ class CSMScraper {
                                     .toggleClass(classes.join(' '))
                                     .attr('class');
         if (categoryRatingString == undefined) {
-            return "";
+            return -1;
         }
         return parseInt(categoryRatingString.replace('content-grid-', ''));
     }
@@ -103,9 +103,13 @@ class CSMScraper {
         let $ = cheerio.load(response.body);
 
         return {
+            app_name: "",
             age_ratings: this.parseCSMAgeRating($),
             csm_rating: this.parseCSMRating($),
             one_liner: this.parseCSMOneLiner($),
+            csm_uri: "",
+            play_store_url: "",
+            app_package_name: "",
             parental_guidances: this.parseCSMParentGuidances($)
         }
     }

@@ -1,5 +1,9 @@
 const CSMScraper = require('./CSMScraper');
 const scraper = new CSMScraper();
+
+const DB = require('../db/db');
+const db = new DB('csm');
+
 const cheerio = require('cheerio');
 const fs = require('fs');
 
@@ -26,7 +30,10 @@ async function processCSM() {
                 totalAppCount += 1;
                 console.log(`Page: ${pageCount} -  Parsing App no ${pageAppCount} of ${links.length} - Total: ${totalAppCount}`);
 
-                csm_results.push(await scraper.parseCSMPage(CSM+link))
+                let app = await scraper.parseCSMPage(CSM+link);
+                app.csm_uri = link;
+                csm_results.push(app)
+                await db.insertCSMAppData(app);
             }
             url = CSM+getNextPageURL($);
         }
