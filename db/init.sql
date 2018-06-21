@@ -8,7 +8,7 @@ create table app_infos(
     one_liner           text,
     csm_uri             text,
     play_store_url      text,
-    app_package_name    text
+    app_package_name    text            not null unique
 ); 
 
 create table guidance_categories(

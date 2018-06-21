@@ -63,10 +63,24 @@ class DB {
         }
     }
 
+    async appPackageExists(app_package_name) {
+        try {
+            let ret = await this.query('select * from app_infos where app_package_name = $1', [app_package_name]);
+            return ret.rowCount > 0;
+        }
+        catch(err) {
+            return err
+        }
+    }
+
     async insertCSMAppData(app) {
         console.log(`Inserting info for app: ${app.name}`);
 
         try {
+            if(await this.appPackageExists(app.app_package_name)) {
+                console.log(`App Already Exists. App Name: ${app.name}, App Package Name: ${app.app_package_name}`);
+                return;
+            }
             await this.query('begin');
             let ret = await this.query('insert into app_infos(app_name, age_rating, csm_rating, one_liner, csm_uri, play_store_url, app_package_name) values ($1,$2,$3,$4,$5,$6,$7) returning id',
                                     [app.name, app.age_rating, app.csm_rating, app.one_liner, app.csm_uri, app.play_store_url, app.app_package_name]
