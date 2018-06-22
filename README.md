@@ -37,19 +37,19 @@ Example Response
         },
         "sex": {
             "rating": 0,
-            "description": ""
+            "description": "No Rating"
         },
         "language": {
             "rating": 0,
-            "description": ""
+            "description": "No Rating"
         },
         "consumerism": {
             "rating": 0,
-            "description": ""
+            "description": "No Rating"
         },
         "drugs": {
             "rating": 0,
-            "description": ""
+            "description": "No Rating"
         },
         "educational": {
             "rating": 3,

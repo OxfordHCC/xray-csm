@@ -94,7 +94,7 @@ class DB {
             for(let row of ret.rows) {
                 guidances[await this.selectGuidanceCategory(row.category)] = {
                     rating: row.rating,
-                    description: row.description
+                    description: row.description == '' ? 'No Rating' : row.description
                 }
             }
             return guidances;
