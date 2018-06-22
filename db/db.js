@@ -73,16 +73,58 @@ class DB {
         }
     }
 
+    async selectGuidanceCategory(categoryID) {
+        try {
+            let ret = await this.query('select * from guidance_categories where id = $1', [categoryID]);
+            if(ret.rowCount != 1) {
+                return categoryID;
+            }
+            return ret.rows[0].title;
+        }
+        catch(err) {
+            console.log(`Error selecting Guidance category for ID: ${categoryID}, Error: ${err}`);
+            return categoryID;
+        }
+    }
+
+    async selectAppGuidances(app_id) {
+        try {
+            let ret = await this.query('select * from app_guidances where app_id = $1', [app_id]);
+            let guidances = {};
+            for(let row of ret.rows) {
+                guidances[await this.selectGuidanceCategory(row.category)] = {
+                    rating: row.rating,
+                    description: row.description
+                }
+            }
+            return guidances;
+        }
+        catch(err) {
+            console.log(`Error fetching guidance ratings for App ID: ${app_id}`);
+            return {};
+        }
+    }
+
     async selectAppInfos(app_package_name) {
         try {
-            let results = await this.query('select * from app_infos where app_package_name = $1', [app_package_name]);
+            let ret = await this.query('select * from app_infos where app_package_name = $1', [app_package_name]);
             
-            if(results.rowCount == 0) {
+            if(ret.rowCount == 0) {
                 return {"not_found":"The app you are looking for could not be found in our database. Maybe it doesn't have any common sense media information?"}
             }
-
             
-
+            let row = ret.rows[0];
+            return {
+                id: row.id,
+                name: row.app_name,
+                age_rating: row.age_rating,
+                csm_rating: row.csm_rating,
+                one_liner: row.one_liner,
+                csm_uri: row.csm_uri,
+                play_store_url: row.play_store_url,
+                app_package_name: row.app_package_name, // from playstore url.
+                parental_guidances: await this.selectAppGuidances(row.id)
+            }
         }
         catch(err) {
             console.log(`Error searching for ${app_package_name} - Error: ${err}`);

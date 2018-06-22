@@ -12,7 +12,10 @@ app.get('/', (req, res) => {
 });
 
 app.get('/apps/:appID', async (req, res) => {
-    res.send({"data":"Some App Data will come here."});
+    let appID = req.params.appID;
+    console.log(`Request Recieved for: ${appID}`);
+    let app = await db.selectAppInfos(appID) 
+    res.send(app);
 });
 
 app.listen(config.api.port, () => console.log(`listening on port ${config.api.port}`));
