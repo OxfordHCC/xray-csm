@@ -73,6 +73,22 @@ class DB {
         }
     }
 
+    async selectAppInfos(app_package_name) {
+        try {
+            let results = await this.query('select * from app_infos where app_package_name = $1', [app_package_name]);
+            
+            if(results.rowCount == 0) {
+                return {"not_found":"The app you are looking for could not be found in our database. Maybe it doesn't have any common sense media information?"}
+            }
+
+            
+
+        }
+        catch(err) {
+            console.log(`Error searching for ${app_package_name} - Error: ${err}`);
+        }
+    }
+
     async insertCSMAppData(app) {
         console.log(`Inserting info for app: ${app.name}`);
 
