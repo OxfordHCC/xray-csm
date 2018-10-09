@@ -58,3 +58,21 @@ Example Response
     }
 }
 ```
+
+
+## How to setup.
+
+You will need node.js in order to run the project.
+
+If you haven’t yet, go [install Node.js](https://nodejs.org/en/download/) which will also install the command-line package manager, npm.
+
+Once you have the above set up on your server you are ready to start!
+
+1. From a Linux environment, clone the repository.
+2. initialise a PostgreSQL Database using `init.sql` found in `path_to_repo/db/init.sql` (Prerequsitie: a Postgres server and client running on your system)
+3. make a copy of `example_config.json` and rename it to `config.json`
+4. update the details of `config.json` so it accurately reflects your DB setup.
+5. run `npm install' to install all node packages required for the project
+6. use `node js` in the `path_to_repo` to run the ` api/xray_csm_api.js` file using the command of `node api/xray_csm_api.js'
+7. from a web browser, navigate to `localhost:8081` or `localhost:<<whatever port>>` if you changed the port number in `config.json`
+
